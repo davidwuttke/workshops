@@ -1,0 +1,820 @@
+% =============================================================================
+% Consolidated TUM Beamer preamble
+% Layout basis: Style_tex_preamble (Metropolis, Ubuntu, title page, footer)
+% Fixes: robust figures; MGT stacked metadata; bilingual labels; standard Beamer multi-author/institute title data; capacity-safe institute handling.
+% Command basis: preamble (15) boxes/cards/helpers/deck macros
+% =============================================================================
+%
+% Usage in a deck:
+%   \documentclass[9pt,aspectratio=169]{beamer}
+%   % Optional, before input, if the logo lives somewhere else:
+%   % \newcommand{\TUMLogoPath}{./Beamer/input/TUM_Logo_blau_rgb_p.png}
+%   \input{preamble_16_layout_switch}
+%   \TumDeckLayout{default}  % or TUM or MGT
+%   \TumDeckGerman        % or \TumDeckEnglish
+%   \title{...}
+%   \subtitle{...}
+%   \author[Short Name]{Full Name}
+%   % Standard Beamer multi-author syntax works:
+%   % \author[Short]{Alice \inst{1} \and Bob \inst{2}}
+%   % \institute[Short]{\inst{1} University A \and \inst{2} University B}
+%   \institute{...}
+%   \date{...}
+%   \begin{document}
+%   \maketitleframe      % title page with TUM logo; does not count as a slide
+%   ...
+%   \end{document}
+%
+% The visual shell intentionally follows the former Style_tex_preamble:
+% Metropolis theme, frametitle progress bar, Ubuntu sans font under Xe/LuaLaTeX,
+% author footer on the left, X/Y slide number on the right, and the old
+% Metropolis-style title page with TUM logo.
+
+% -----------------------------------------------------------------------------
+% 1. Encoding, language, fonts and core packages
+% -----------------------------------------------------------------------------
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[utf8]{inputenc}
+  \usepackage[T1]{fontenc}
+\fi
+
+% Old layout engine: Metropolis with frametitle progress bar and fractional
+% numbering, exactly the mechanism used in Style_tex_preamble.
+\usetheme[block=fill,progressbar=frametitle,background=light,numbering=fraction]{metropolis}
+
+\usepackage[english,ngerman]{babel}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,calc}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{ragged2e}
+\usepackage{xurl}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{microtype}
+\usepackage{xparse}
+\usepackage{xstring}
+\usepackage{eurosym}
+\usepackage{adjustbox}
+% Match the old PDF exactly when compiling with XeLaTeX/LuaLaTeX.  The old
+% Style_Tex.pdf uses the Ubuntu font.  For pdfLaTeX we keep a sans fallback.
+\ifPDFTeX
+  \usepackage{helvet}
+  \renewcommand{\familydefault}{\sfdefault}
+\else
+  \providecommand{\TumSansFont}{Ubuntu}% decks may select another installed font
+  \IfFontExistsTF{\TumSansFont}{%
+    \setsansfont{\TumSansFont}%
+  }{%
+    \IfFontExistsTF{DejaVu Sans}{\setsansfont{DejaVu Sans}}{}%
+    \PackageWarning{preamble}{Ubuntu font not found; using available sans fallback. Compile on a system with Ubuntu installed for the exact old look.}%
+  }%
+\fi
+
+% -----------------------------------------------------------------------------
+% 2. Color system
+% -----------------------------------------------------------------------------
+% Load whichever TUM color helper exists in the project; then define stable
+% semantic colors used by all shared commands below.
+\IfFileExists{Style/tumColors.sty}{%
+  \usepackage{Style/tumColors}%
+}{%
+  \IfFileExists{Style/tum_colors.sty}{\usepackage{Style/tum_colors}}{}%
+}
+
+\definecolor{primaryBlue}{RGB}{0,101,189}
+\definecolor{secondaryGray}{RGB}{102,102,102}
+\definecolor{tertiaryOrange}{RGB}{227,114,34}
+\definecolor{tertiaryGreen}{RGB}{162,173,0}
+
+% Semantic aliases. Use these in decks when possible for consistency.
+\colorlet{tumPrimary}{primaryBlue}
+\colorlet{tumTextGray}{secondaryGray}
+\colorlet{tumAccentOrange}{tertiaryOrange}
+\colorlet{tumAccentGreen}{tertiaryGreen}
+\colorlet{tumCardBodyBlue}{primaryBlue!7}
+\colorlet{tumCardBodyOrange}{tertiaryOrange!12}
+\colorlet{tumCardBodyGreen}{tertiaryGreen!15}
+
+% -----------------------------------------------------------------------------
+% 3. Beamer base theme, typography and old-style frame layout
+% -----------------------------------------------------------------------------
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{blocks}[default]
+
+% Item markers as in Style_tex_preamble.
+\setbeamertemplate{itemize item}{\scriptsize\raise1.25pt\hbox{\textbullet}}
+\setbeamertemplate{itemize subitem}{\tiny\raise1.5pt\hbox{\textbullet}}
+\setbeamertemplate{itemize subsubitem}{\tiny\raise1.5pt\hbox{\textbullet}}
+\setbeamertemplate{enumerate items}[default]
+
+% Metropolis / old-style sizes.  Avoid the compact custom frametitle from
+% preamble (15); Metropolis supplies the former spacing and progressbar position.
+\setbeamerfont{frametitle}{series=\bfseries,size=\large}
+\setbeamerfont{title}{series=\bfseries,size=\Large}
+\setbeamerfont{subtitle}{size=\large}
+\setbeamerfont{author}{size=\small}
+\setbeamerfont{date}{size=\small}
+\setbeamerfont{institute}{size=\small}
+\setbeamerfont{block title}{series=\bfseries,size=\normalsize}
+\setbeamerfont{block body}{size=\footnotesize}
+\setbeamerfont{page number in head/foot}{size=\tiny}
+
+% Color behavior: old white frametitle, TUM-blue progress/title separator.
+\setbeamercolor{frametitle}{bg=white,fg=black}
+\setbeamercolor{footline}{fg=gray}
+\setbeamercolor{item}{fg=primaryBlue}
+\setbeamercolor{subitem}{fg=primaryBlue}
+\setbeamercolor{progress bar}{fg=primaryBlue,bg=secondaryGray!35}
+\setbeamercolor{title separator}{fg=primaryBlue,bg=secondaryGray!35}
+\setbeamercolor{progress bar in head/foot}{fg=primaryBlue,bg=secondaryGray!35}
+\setbeamercolor{progress bar in section page}{fg=primaryBlue,bg=secondaryGray!35}
+
+\setbeamercolor{block title}{bg=primaryBlue,fg=white}
+\setbeamercolor{block body}{bg=primaryBlue!7,fg=black}
+\setbeamercolor{block title alerted}{bg=tertiaryOrange,fg=white}
+\setbeamercolor{block body alerted}{bg=tertiaryOrange!12,fg=black}
+
+\makeatletter
+\setlength{\metropolis@titleseparator@linewidth}{2pt}
+\setlength{\metropolis@progressonsectionpage@linewidth}{2pt}
+\setlength{\metropolis@progressinheadfoot@linewidth}{2pt}
+\newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
+\makeatother
+
+% Footer restored from Style_tex_preamble, with a little explicit inset on both
+% sides: short author at bottom left and X/Y slide number at bottom right.
+\setbeamertemplate{frame footer}{\insertshortauthor}
+\setbeamertemplate{frame numbering}[fraction]
+\setbeamertemplate{footline}{%
+  \begin{beamercolorbox}[%
+    wd=\paperwidth,%
+    ht=2.8ex,%
+    dp=2.3ex,%
+    leftskip=3ex,%
+    rightskip=3ex%
+  ]{footline}%
+    \usebeamerfont{page number in head/foot}%
+    \usebeamertemplate*{frame footer}%
+    \hfill%
+    \usebeamertemplate*{frame numbering}%
+  \end{beamercolorbox}%
+}
+
+% -----------------------------------------------------------------------------
+% 4. Title/section layout switch and shared visual assets
+% -----------------------------------------------------------------------------
+% Choose one of the three title/section styles in the slide deck, after this
+% preamble is loaded and before \begin{document}:
+%   \TumDeckLayout{default}   % old Style_Tex / Metropolis title and section page
+%   \TumDeckLayout{TUM}       % TUM PowerPoint-style title, current white section page
+%   \TumDeckLayout{MGT}       % MGT blue-band title and section pages
+%
+% The normal slide layout, content fonts, progress bar, footer and cards/boxes are
+% intentionally not changed by this switch.
+
+% All image assets used by the title/section layouts live in Beamer/figures.
+% Override these paths before \input{...} only if your project has a different
+% folder structure.  The resolver below deliberately searches a few common
+% relative locations as well, because decks are sometimes compiled from the
+% project root and sometimes from within a Beamer/ subfolder.
+\providecommand{\TumFigureDir}{./Beamer/figures}
+\providecommand{\TUMLogoPath}{\TumFigureDir/TUM_Logo_blau_transparent.png}
+\providecommand{\TUMWhiteLogoPath}{\TumFigureDir/TUM_Logo_weiss_transparent.png}
+\providecommand{\TumTitleSketchPath}{\TumFigureDir/TUM_title_clocktower.jpeg}
+\providecommand{\TumMGTBackgroundPath}{\TumFigureDir/MGT_blueband_background.jpeg}
+\providecommand{\TumMGTAccreditationPath}{\TumFigureDir/MGT_accreditation_logos.png}
+
+% Also help \includegraphics find figures when a deck uses just the file name.
+\graphicspath{{\TumFigureDir/}{./Beamer/figures/}{Beamer/figures/}{./figures/}{figures/}{../figures/}{../Beamer/figures/}{../../Beamer/figures/}}
+
+\newcommand{\TumFrameLogoWidth}{1.00cm}
+\newcommand{\TumTitleLogoWidth}{2.00cm}
+\newcommand{\TumCorporateLogoWidth}{0.0661\paperwidth}
+
+\makeatletter
+\newcommand{\TumResolveGraphic}[2]{%
+  \let#2\@empty
+  \IfFileExists{\TumFigureDir/#1}{\def#2{\TumFigureDir/#1}}{%
+  \IfFileExists{./Beamer/figures/#1}{\def#2{./Beamer/figures/#1}}{%
+  \IfFileExists{Beamer/figures/#1}{\def#2{Beamer/figures/#1}}{%
+  \IfFileExists{./figures/#1}{\def#2{./figures/#1}}{%
+  \IfFileExists{figures/#1}{\def#2{figures/#1}}{%
+  \IfFileExists{../figures/#1}{\def#2{../figures/#1}}{%
+  \IfFileExists{../Beamer/figures/#1}{\def#2{../Beamer/figures/#1}}{%
+  \IfFileExists{../../Beamer/figures/#1}{\def#2{../../Beamer/figures/#1}}{}%
+  }}}}}}}%
+}
+\newcommand{\TumResolveGraphicFromPathOrFilename}[3]{%
+  \let#3\@empty
+  \IfFileExists{#1}{\def#3{#1}}{\TumResolveGraphic{#2}{#3}}%
+}
+\newcommand{\TumUseGraphicOrWarning}[3][]{%
+  \TumResolveGraphicFromPathOrFilename{#2}{#3}{\TumResolvedGraphic}%
+  \ifx\TumResolvedGraphic\@empty
+    \PackageWarning{preamble}{Graphic `#3' not found. Put it in Beamer/figures, or redefine the corresponding path macro before loading the preamble. Image skipped}%
+  \else
+    \includegraphics[#1]{\TumResolvedGraphic}%
+  \fi
+}
+\makeatother
+
+\NewDocumentCommand{\TumLogo}{O{\TumFrameLogoWidth}}{%
+  \IfFileExists{\TUMLogoPath}{\includegraphics[width=#1]{\TUMLogoPath}}{%
+    \IfFileExists{./Beamer/input/TUM_Logo_blau_rgb_p.png}{\includegraphics[width=#1]{./Beamer/input/TUM_Logo_blau_rgb_p.png}}{%
+      \IfFileExists{Beamer/input/TUM_Logo_blau_rgb_p.png}{\includegraphics[width=#1]{Beamer/input/TUM_Logo_blau_rgb_p.png}}{%
+        \TumUseGraphicOrWarning[width=#1]{\TUMLogoPath}{TUM_Logo_blau_transparent.png}%
+      }%
+    }%
+  }%
+}
+
+\NewDocumentCommand{\TumLogoWhite}{O{\TumCorporateLogoWidth}}{%
+  \TumUseGraphicOrWarning[width=#1]{\TUMWhiteLogoPath}{TUM_Logo_weiss_transparent.png}%
+}
+
+\newcommand{\HRule}[1]{\par\noindent{\color{secondaryGray}\rule{\linewidth}{#1}}}
+
+% Backward-compatible logo command from Style_tex_preamble.  It is deliberately
+% not attached to every frame by default, because the old slide layout did not do
+% that.  Decks that want it can call \positionLogo on selected frames or add it
+% manually with \addtobeamertemplate{frametitle}{}{\positionLogo}.
+\newcommand{\positionLogo}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=north east,inner sep=5pt] at (current page.north east)
+      {\TumLogo[\TumFrameLogoWidth]};
+  \end{tikzpicture}%
+}
+\let\TumFrameLogo\positionLogo
+
+% Backward-compatible names from preamble (14)/(15).  They no longer draw the
+% footer or a custom progress line; those are handled by the restored Metropolis
+% layout above.
+\newcommand{\TumProgressBar}{\usebeamertemplate*{progress bar in head/foot}}
+\newcommand{\TumFrameChrome}{\positionLogo}
+\newcommand{\TumEnableFrameLogo}{\addtobeamertemplate{frametitle}{}{\positionLogo}}
+
+% Default/Style_Tex title graphic: TUM logo on the old Metropolis title page.
+\titlegraphic{\hfill\TumLogo[\TumTitleLogoWidth]}
+
+% Layout choice.  The default keeps the old Style_Tex title/section behavior.
+\providecommand{\TumDeckLayoutName}{default}
+\NewDocumentCommand{\TumDeckLayout}{m}{\renewcommand{\TumDeckLayoutName}{#1}}
+\NewDocumentCommand{\TumUseDefaultLayout}{}{\TumDeckLayout{default}}
+\NewDocumentCommand{\TumUseTUMLayout}{}{\TumDeckLayout{TUM}}
+\NewDocumentCommand{\TumUseMGTLayout}{}{\TumDeckLayout{MGT}}
+\let\TumLayoutDefault\TumUseDefaultLayout
+\let\TumLayoutTUM\TumUseTUMLayout
+\let\TumLayoutMGT\TumUseMGTLayout
+
+% TUM corporate reference title pages do not show subtitles.  Keep that exact
+% behavior for the TUM layout by default; call \TumShowCorporateSubtitle if a
+% TUM title deck should additionally display \subtitle.  The MGT layout shows
+% \subtitle by default and stacks author/date below the title block, so long
+% two-line titles do not collide with the metadata.
+\newif\ifTumCorporateSubtitle
+\TumCorporateSubtitlefalse
+\newcommand{\TumShowCorporateSubtitle}{\TumCorporateSubtitletrue}
+\newcommand{\TumHideCorporateSubtitle}{\TumCorporateSubtitlefalse}
+
+% Simple string dispatcher; accepts common capitalization variants.
+\NewDocumentCommand{\TumLayoutDispatch}{m m m}{%
+  \IfStrEqCase{\TumDeckLayoutName}{%
+    {default}{#1}%
+    {Default}{#1}%
+    {DEFAULT}{#1}%
+    {tum}{#2}%
+    {Tum}{#2}%
+    {TUM}{#2}%
+    {mgt}{#3}%
+    {Mgt}{#3}%
+    {MGT}{#3}%
+  }[#1]%
+}
+
+% Title-page metadata helpers ---------------------------------------------------
+% Beamer already has the right machinery for multi-author title data:
+%   \author[Short]{Alice \inst{1} \and Bob \inst{2}}
+%   \institute[Short]{\inst{1} University A \and \inst{2} University B}
+% The custom TUM/MGT title pages below now use the same Beamer insertions, rather
+% than manually typesetting a single author/institute line.  Pipe-separated legacy
+% institute strings such as "TUM | School | Campus" are normalized to \and, so old
+% decks continue to work while standard Beamer multi-institute syntax works too.
+\let\TumOriginalInstitute\institute
+
+\makeatletter
+% Accept both Beamer's standard \inst{1} and the occasional \inst[1] variant on
+% title pages and in short author/footer strings.
+\def\beamer@insttitle{\@ifnextchar[{\beamer@insttitle@opt}{\beamer@insttitle@mand}}
+\def\beamer@insttitle@opt[#1]{\textsuperscript{#1}}
+\def\beamer@insttitle@mand#1{\textsuperscript{#1}}
+\def\beamer@instinst{\@ifnextchar[{\beamer@instinst@opt}{\beamer@instinst@mand}}
+\def\beamer@instinst@opt[#1]{\textsuperscript{#1}\ignorespaces}
+\def\beamer@instinst@mand#1{\textsuperscript{#1}\ignorespaces}
+\def\beamer@instother{\@ifnextchar[{\beamer@instother@opt}{\beamer@instother@mand}}
+\def\beamer@instother@opt[#1]{}
+\def\beamer@instother@mand#1{}
+\makeatother
+
+\newcommand{\TumTitleInstituteNormalized}{}
+\ExplSyntaxOn
+\tl_new:N \g_tum_title_institute_tl
+\cs_new_protected:Npn \tum_store_title_institute:n #1
+  {
+    \tl_gset:Nn \g_tum_title_institute_tl {#1}
+    % expl3 treats ~ as a normal space token here.  This replaces both
+    % " | " and bare "|" with Beamer's standard institute separator.
+    \tl_greplace_all:Nnn \g_tum_title_institute_tl {~|~} { \and }
+    \tl_greplace_all:Nnn \g_tum_title_institute_tl {|} { \and }
+    \cs_gset_protected:Npx \TumTitleInstituteNormalized
+      { \exp_not:V \g_tum_title_institute_tl }
+  }
+\NewDocumentCommand{\TumStoreTitleInstitute}{+m}
+  { \tum_store_title_institute:n {#1} }
+\ExplSyntaxOff
+
+\RenewDocumentCommand{\institute}{o +m}{%
+  \TumStoreTitleInstitute{#2}%
+  \IfNoValueTF{#1}{%
+    \TumOriginalInstitute{\TumTitleInstituteNormalized}%
+  }{%
+    \TumOriginalInstitute[#1]{\TumTitleInstituteNormalized}%
+  }%
+}
+% Alias for people/classes that use \institution instead of \institute.
+% Use a real document command rather than a raw \let, so the optional short form
+% continues to work and future package hooks remain safe.
+\DeclareDocumentCommand{\institution}{o +m}{%
+  \IfNoValueTF{#1}{\institute{#2}}{\institute[#1]{#2}}%
+}
+
+% Keep PDF metadata/bookmarks from trying to expand author affiliation markers.
+% This avoids noisy hyperref warnings when authors use \textsuperscript or \inst.
+\makeatletter
+\providecommand{\TumPDFGobbleInstOpt}[1][]{ }
+\providecommand{\TumPDFGobbleInstMand}[1]{ }
+\pdfstringdefDisableCommands{%
+  \def\textsuperscript#1{}%
+  \def\inst{\@ifnextchar[{\TumPDFGobbleInstOpt}{\TumPDFGobbleInstMand}}%
+  \def\and{, }%
+  \def\href#1#2{#2}%
+}
+\makeatother
+
+\makeatletter
+\newcommand{\TumTitleAuthorList}{%
+  \begingroup
+    \def\beamer@andtitle{\hspace{1.05em}}%
+    \let\thanks\@gobble
+    \insertauthor
+  \endgroup
+}
+\newcommand{\TumTitleInstituteList}{%
+  \begingroup
+    \setlength{\parindent}{0pt}%
+    \RaggedRight
+    \let\thanks\@gobble
+    \def\beamer@andinst{\par\vspace{0.18em}}%
+    \insertinstitute
+  \endgroup
+}
+\makeatother
+
+% Footer text on MGT section slides.  Override in a deck if a shorter footer is
+% needed for a particular course/workshop.
+\providecommand{\TumMGTSectionFooterText}{\insertshortauthor\ | \insertshorttitle\ | \insertdate}
+
+% --- Default / Style_Tex title and section pages -----------------------------
+\newcommand{\TumDefaultTitlePage}{%
+  \begin{frame}[plain,noframenumbering]
+    \begingroup
+      \setbeamerfont{institute}{size=\scriptsize}%
+      \titlepage
+    \endgroup
+  \end{frame}%
+}
+
+\newcommand{\TumDefaultSectionPage}{%
+  \begin{frame}[plain]
+    \sectionpage
+  \end{frame}%
+}
+
+% --- TUM PowerPoint-style title page; section page remains the current one ----
+% The corporate title/section pages use textpos for absolute page coordinates.
+% This avoids the TikZ remember-picture two-run issue that can make images appear
+% to be missing on the first LaTeX pass.
+\newcommand{\TumTUMTitlePage}{%
+  \begin{frame}[plain,noframenumbering]
+    % TUM logo: position and size from the PowerPoint master.
+    \begin{textblock*}{\TumCorporateLogoWidth}(0.8988\paperwidth,0.0629\paperheight)
+      \TumLogo[\TumCorporateLogoWidth]%
+    \end{textblock*}
+
+    % Main title placeholder.
+    \begin{textblock*}{0.9306\paperwidth}(0.0349\paperwidth,0.1477\paperheight)
+      {\fontsize{17}{21}\selectfont\color{black}\inserttitle\par}%
+      \ifTumCorporateSubtitle
+        \vspace{0.12in}{\fontsize{10}{13}\selectfont\color{secondaryGray}\insertsubtitle\par}%
+      \fi
+    \end{textblock*}
+
+    % Author/date plus institute footnotes.  The institute block uses
+    % Beamer's standard \inst / \and formatting and is intentionally smaller.
+    \begin{textblock*}{0.5200\paperwidth}(0.0347\paperwidth,0.3356\paperheight)
+      {\fontsize{9}{11}\selectfont\color{black}\TumTitleAuthorList\par}%
+      \vspace{0.06in}%
+      {\fontsize{10}{13}\selectfont\color{black}\insertdate\par}%
+      \vspace{0.10in}%
+      {\fontsize{5.4}{6.5}\selectfont\color{black}\TumTitleInstituteList\par}%
+    \end{textblock*}
+
+    % Clocktower sketch from the TUM reference deck.
+    \begin{textblock*}{0.4177\paperwidth}(0.5441\paperwidth,0.2871\paperheight)
+      \TumUseGraphicOrWarning[width=0.4177\paperwidth,height=0.6482\paperheight,keepaspectratio]{\TumTitleSketchPath}{TUM_title_clocktower.jpeg}%
+    \end{textblock*}
+  \end{frame}%
+}
+
+\newcommand{\TumTUMSectionPage}{%
+  \begin{frame}[plain]
+    \vfill
+    \begin{center}
+    {\usebeamerfont{title}\color{primaryBlue}\tumPartLabel~\Roman{section}:\par\insertsection}
+    \end{center}
+    \vfill
+  \end{frame}%
+}
+
+% --- MGT blue-band title and section pages -----------------------------------
+\makeatletter
+\newcommand{\TumMGTBackground}{%
+  \TumResolveGraphicFromPathOrFilename{\TumMGTBackgroundPath}{MGT_blueband_background.jpeg}{\TumResolvedMGTBackground}%
+  \begin{textblock*}{\paperwidth}(0pt,0pt)
+    \ifx\TumResolvedMGTBackground\@empty
+      \PackageWarning{preamble}{Graphic `MGT_blueband_background.jpeg' not found. Using solid TUM blue background instead}%
+      {\color{primaryBlue}\rule{\paperwidth}{\paperheight}}%
+    \else
+      \includegraphics[width=\paperwidth,height=\paperheight]{\TumResolvedMGTBackground}%
+    \fi
+  \end{textblock*}%
+}
+\makeatother
+
+% MGT title content as one vertical stack.  This preserves the PowerPoint
+% coordinates for the start of the title, but lets the subtitle, author and date
+% move down naturally when the title wraps to two lines.
+\newcommand{\TumMGTTitlePage}{%
+  \begin{frame}[plain,noframenumbering]
+    \TumMGTBackground
+
+    % TUM logo from the PowerPoint master, recolored to white.
+    \begin{textblock*}{\TumCorporateLogoWidth}(0.8988\paperwidth,0.0629\paperheight)
+      \TumLogoWhite[\TumCorporateLogoWidth]%
+    \end{textblock*}
+
+    % Title, subtitle and metadata.  Author/date are deliberately not positioned
+    % in a separate absolute block, so they cannot overlap long titles.
+    \begin{textblock*}{0.9306\paperwidth}(0.0349\paperwidth,0.1890\paperheight)
+      \raggedright
+      {\fontsize{18}{22}\selectfont\color{white}\inserttitle\par}%
+      \vspace{0.055in}%
+      {\fontsize{11}{14}\selectfont\color{white}\insertsubtitle\par}%
+      \vspace{0.100in}%
+      {\fontsize{9}{12}\selectfont\color{white}\TumTitleAuthorList\par}%
+      \vspace{0.052in}%
+      {\fontsize{9}{12}\selectfont\color{white}\insertdate\par}%
+      \vspace{0.080in}%
+      {\fontsize{5.2}{6.4}\selectfont\color{white}\TumTitleInstituteList\par}%
+    \end{textblock*}
+
+    % Accreditation logos on the MGT title page.
+    \begin{textblock*}{0.2251\paperwidth}(0.0245\paperwidth,0.8738\paperheight)
+      \TumUseGraphicOrWarning[width=0.2251\paperwidth,height=0.0770\paperheight,keepaspectratio]{\TumMGTAccreditationPath}{MGT_accreditation_logos.png}%
+    \end{textblock*}
+  \end{frame}%
+}
+
+\newcommand{\TumMGTSectionPage}{%
+  \begin{frame}[plain]
+    \TumMGTBackground
+    \begin{textblock*}{\TumCorporateLogoWidth}(0.8988\paperwidth,0.0629\paperheight)
+      \TumLogoWhite[\TumCorporateLogoWidth]%
+    \end{textblock*}
+    \begin{textblock*}{0.9306\paperwidth}(0.0349\paperwidth,0.1890\paperheight)
+      {\fontsize{18}{22}\selectfont\color{white}\insertsection\par}%
+    \end{textblock*}
+    \begin{textblock*}{0.8661\paperwidth}(0.0280\paperwidth,0.9463\paperheight)
+      {\fontsize{7}{9}\selectfont\color{white}\TumMGTSectionFooterText\par}%
+    \end{textblock*}
+  \end{frame}%
+}
+
+% Public title-frame command used by the slide decks.  The deck itself keeps
+% calling \maketitleframe; only \TumDeckLayout{...} changes the visual style.
+\NewDocumentCommand{\maketitleframe}{}{%
+  \TumLayoutDispatch{\TumDefaultTitlePage}{\TumTUMTitlePage}{\TumMGTTitlePage}%
+}
+\let\titleframe\maketitleframe
+
+% -----------------------------------------------------------------------------
+% 5. Language labels for reusable boxes, badges and section helpers
+% -----------------------------------------------------------------------------
+% Defaults are German because most decks in this bundle are German-language.
+% Every design element that prints a word is routed through this label layer.
+\newcommand{\tumTakeawayLabel}{Kernaussage}
+\newcommand{\tumWarningLabel}{Achtung}
+\newcommand{\tumActivityLabel}{Aktivität}
+\newcommand{\tumSourceLabel}{Quelle}
+\newcommand{\tumPartLabel}{TEIL}
+\newcommand{\tumQuestionLabel}{Frage}
+\newcommand{\tumFocusLabel}{Fokus}
+\newcommand{\tumAgendaLabel}{Agenda}
+\newcommand{\tumCriticalReflectionLabel}{kritische Selbstreflexion}
+\newcommand{\tumCriticalReflectionText}{Hinweis: Bitte nehmen Sie sich nach dem Vortrag 20 Minuten Zeit zur Selbstreflexion. Dies kann auch unterwegs oder in der Bahn passieren. Überlegen Sie bei jeder Frage, ob Ihnen ein konkretes Beispiel aus Ihrem Arbeitsalltag einfällt. Wie könnten Sie, auf Grundlage der Reflexion und der neuen Einblicke, anders entscheiden oder agieren?}
+\newcommand{\tumOpexImplicationLabel}{OPEX-Implikation}
+
+% Optional takeaway-label mode.  Keep \takeaway generic by default; call
+% \TumUseOpexTakeawayLabel in an OPEX deck if the same \takeaway{...}
+% command should carry the OPEX-specific title.  The mode is language-aware and
+% can be set before or after \TumDeckGerman / \TumDeckEnglish.
+\newif\ifTumOpexTakeawayLabel
+\TumOpexTakeawayLabelfalse
+\newcommand{\TumUseGenericTakeawayLabel}{%
+  \TumOpexTakeawayLabelfalse
+  \renewcommand{\tumTakeawayLabel}{\tumGenericTakeawayLabel}%
+}
+\newcommand{\TumUseOpexTakeawayLabel}{%
+  \TumOpexTakeawayLabeltrue
+  \renewcommand{\tumTakeawayLabel}{\tumOpexImplicationLabel}%
+}
+\newcommand{\tumGenericTakeawayLabel}{Kernaussage}
+
+\newcommand{\TumApplyTakeawayLabelMode}{%
+  \ifTumOpexTakeawayLabel
+    \renewcommand{\tumTakeawayLabel}{\tumOpexImplicationLabel}%
+  \else
+    \renewcommand{\tumTakeawayLabel}{\tumGenericTakeawayLabel}%
+  \fi
+}
+
+\newcommand{\TumLabelsGerman}{%
+  \renewcommand{\tumGenericTakeawayLabel}{Kernaussage}%
+  \renewcommand{\tumWarningLabel}{Achtung}%
+  \renewcommand{\tumActivityLabel}{Aktivität}%
+  \renewcommand{\tumSourceLabel}{Quelle}%
+  \renewcommand{\tumPartLabel}{TEIL}%
+  \renewcommand{\tumQuestionLabel}{Frage}%
+  \renewcommand{\tumFocusLabel}{Fokus}%
+  \renewcommand{\tumAgendaLabel}{Agenda}%
+  \renewcommand{\tumCriticalReflectionLabel}{kritische Selbstreflexion}%
+  \renewcommand{\tumCriticalReflectionText}{Hinweis: Bitte nehmen Sie sich nach dem Vortrag 20 Minuten Zeit zur Selbstreflexion. Dies kann auch unterwegs oder in der Bahn passieren. Überlegen Sie bei jeder Frage, ob Ihnen ein konkretes Beispiel aus Ihrem Arbeitsalltag einfällt. Wie könnten Sie, auf Grundlage der Reflexion und der neuen Einblicke, anders entscheiden oder agieren?}%
+  \renewcommand{\tumOpexImplicationLabel}{OPEX-Implikation}%
+  \TumApplyTakeawayLabelMode%
+}
+
+\newcommand{\TumLabelsEnglish}{%
+  \renewcommand{\tumGenericTakeawayLabel}{Takeaway}%
+  \renewcommand{\tumWarningLabel}{Attention}%
+  \renewcommand{\tumActivityLabel}{Activity}%
+  \renewcommand{\tumSourceLabel}{Source}%
+  \renewcommand{\tumPartLabel}{PART}%
+  \renewcommand{\tumQuestionLabel}{Question}%
+  \renewcommand{\tumFocusLabel}{Focus}%
+  \renewcommand{\tumAgendaLabel}{Agenda}%
+  \renewcommand{\tumCriticalReflectionLabel}{critical self-reflection}%
+  \renewcommand{\tumCriticalReflectionText}{Note: Please take 20 minutes after the talk for self-reflection. You can also do this on the way home or on the train. For each question, consider whether a concrete example from your own work comes to mind. Based on your reflection and the new insights, how could you decide or act differently?}%
+  \renewcommand{\tumOpexImplicationLabel}{OPEX implication}%
+  \TumApplyTakeawayLabelMode%
+}
+
+\newcommand{\TumDeckGerman}{\TumLabelsGerman\AtBeginDocument{\selectlanguage{ngerman}}}
+\newcommand{\TumDeckEnglish}{\TumLabelsEnglish\AtBeginDocument{\selectlanguage{english}}}
+
+% Explicit German/English label wrappers for one-off usage.
+\newcommand{\takeawayDE}[1]{\takeaway[Kernaussage]{#1}}
+\newcommand{\takeawayEN}[1]{\takeaway[Takeaway]{#1}}
+\newcommand{\opextakeawayDE}[1]{\takeaway[OPEX-Implikation]{#1}}
+\newcommand{\opextakeawayEN}[1]{\takeaway[OPEX implication]{#1}}
+\newcommand{\warningboxDE}[1]{\warningbox[Achtung]{#1}}
+\newcommand{\warningboxEN}[1]{\warningbox[Attention]{#1}}
+\newcommand{\sourceDE}[1]{\source[Quelle]{#1}}
+\newcommand{\sourceEN}[1]{\source[Source]{#1}}
+\newcommand{\activitymarkerDE}{\activitymarker[Aktivität]}
+\newcommand{\activitymarkerEN}{\activitymarker[Activity]}
+
+% -----------------------------------------------------------------------------
+% 6. Text emphasis helpers
+% -----------------------------------------------------------------------------
+\newcommand{\blue}[1]{{\color{primaryBlue}\textbf{#1}}}
+\newcommand{\orange}[1]{{\color{tertiaryOrange}\textbf{#1}}}
+\newcommand{\green}[1]{{\color{tertiaryGreen}\textbf{#1}}}
+\newcommand{\graytext}[1]{{\color{secondaryGray}#1}}
+
+\usepackage{dcolumn}
+\newcolumntype{d}[1]{D{.}{.}{#1}}
+\newcommand{\muc}[2]{\multicolumn{1}{C{#1}}{#2}}
+\newcommand{\mul}[2]{\multicolumn{1}{L{#1}}{#2}}
+\newcommand{\mucThree}[2]{\multicolumn{3}{C{#1}}{#2}}
+\newcommand{\mulTen}[2]{\multicolumn{10}{L{#1}}{#2}}
+
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}} 
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}} 
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}} 
+\newlength\interColSepSmall
+\newlength\interColSepLarge
+\setlength{\interColSepSmall}{0.2em}
+\setlength{\interColSepLarge}{0.4em}
+\usepackage{bbm}
+
+% -----------------------------------------------------------------------------
+% 7. Cards, boxes and source notes
+% -----------------------------------------------------------------------------
+% Lean square box with fixed visual line height
+\newlength{\tumboxpad}
+\setlength{\tumboxpad}{0.45ex}
+
+\newcommand{\tumboxstrut}{\vphantom{Wq}}
+
+\NewDocumentCommand{\tumbox}{O{primaryBlue} O{7} m +m}{%
+  \par\noindent%
+  \hspace{-3\tumboxpad}
+  \begingroup%
+  \setlength{\fboxsep}{\tumboxpad}%
+  \setlength{\parskip}{0pt}% prevents a white gap between stacked colorboxes
+  \colorbox{#1}{%
+    \parbox{\dimexpr\linewidth+2\fboxsep\relax}{%
+      \color{white}%
+      \usebeamerfont{block title}%
+      \tumboxstrut #3\tumboxstrut\par%
+    }%
+  }%
+  \par\nointerlineskip\noindent%
+  \hspace{-2\tumboxpad}%
+  \colorbox{#1!#2}{%
+    \parbox{\dimexpr\linewidth+2\fboxsep\relax}{%
+      \color{black}%
+      \flushleft
+      \usebeamerfont{block body}%
+      \normalsize%
+      \tumboxstrut #4\tumboxstrut\par%
+    }%
+  }%
+  \par%
+  \endgroup%
+  \vspace{.4em}
+}
+
+
+
+
+\NewDocumentCommand{\tumalertbox}{O{tertiaryOrange} O{12} m m}{%
+  \begingroup
+  \setbeamercolor{block title alerted}{bg=#1,fg=white}%
+  \setbeamercolor{block body alerted}{bg=#1!#2,fg=black}%
+  \begin{alertblock}{#3}\normalsize #4\end{alertblock}%
+  \endgroup
+}
+\usepackage{tcolorbox}
+% Backward-compatible card commands used across the current decks.
+\newcommand{\card}[2]{\tumbox[primaryBlue][7]{#1}{#2}}
+%\newcommand{\card}[2]{\begin{tcolorbox}[colframe=primaryBlue, colback=white, sharp corners=south, fonttitle=\bfseries, title=#1]#2\end{tcolorbox}}
+\newcommand{\smallcard}[2]{\tumbox[primaryBlue][7]{#1}{#2}}
+\newcommand{\orangecard}[2]{\tumbox[tertiaryOrange][12]{#1}{#2}}
+\newcommand{\greencard}[2]{\tumbox[tertiaryGreen][15]{#1}{#2}}
+
+% Language-aware box titles; override per box with the optional argument.
+\NewDocumentCommand{\takeaway}{O{\tumTakeawayLabel} m}{\tumalertbox[tertiaryGreen][15]{#1}{#2}}
+\NewDocumentCommand{\warningbox}{O{\tumWarningLabel} m}{\tumalertbox[tertiaryOrange][12]{#1}{#2}}
+
+\NewDocumentCommand{\source}{O{\tumSourceLabel} m}{%
+  \vspace{0.15em}{\tiny\color{secondaryGray}\textbf{#1:} #2\par}%
+}
+
+% -----------------------------------------------------------------------------
+% 8. Activity badge and activity frame border
+% -----------------------------------------------------------------------------
+\NewDocumentCommand{\activitymarker}{O{\tumActivityLabel}}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[
+      anchor=north east,
+      draw=tertiaryOrange,
+      text=tertiaryOrange,
+      line width=0.8pt,
+      font=\sffamily\bfseries,
+      inner xsep=4pt,
+      inner ysep=2pt
+    ] at ([xshift=-1.35cm,yshift=-0.20cm]current page.north east) {#1};
+    \draw[line width=3.5pt,draw=tertiaryOrange]
+      ([xshift=1pt,yshift=-1pt]current page.north west) rectangle
+      ([xshift=-2pt,yshift=2pt]current page.south east);
+  \end{tikzpicture}%
+}
+
+% Backward-compatible all-caps command used in existing decks.
+\newcommand{\ACTIVITY}{\activitymarker}
+
+% -----------------------------------------------------------------------------
+% 9. Image layout helpers
+% -----------------------------------------------------------------------------
+\newcommand{\fullvisual}[1]{%
+  \vspace{-0.45em}%
+  \begin{center}
+  \includegraphics[width=0.985\linewidth,height=0.70\textheight,keepaspectratio]{#1}
+  \end{center}%
+}
+
+\newcommand{\fullvisualtall}[1]{%
+  \vspace{-0.45em}%
+  \begin{center}
+  \includegraphics[width=0.985\linewidth,height=0.76\textheight,keepaspectratio]{#1}
+  \end{center}%
+}
+
+\newcommand{\sidevisual}[1]{\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{#1}}
+
+% -----------------------------------------------------------------------------
+% 10. Shared TikZ styles
+% -----------------------------------------------------------------------------
+\tikzset{
+  mainnode/.style={draw=primaryBlue, fill=primaryBlue!7, thick, align=center, inner sep=4pt},
+  subdnode/.style={draw=tertiaryOrange, fill=tertiaryOrange!12, thick, align=center, inner sep=4pt},
+  greennode/.style={draw=tertiaryGreen, fill=tertiaryGreen!15, thick, align=center, inner sep=4pt},
+  graynode/.style={draw=secondaryGray, fill=secondaryGray!8, thick, align=center, inner sep=4pt},
+  processarrow/.style={-{Stealth[length=2mm]}, thick}
+}
+
+% -----------------------------------------------------------------------------
+% 11. Deck structure and deck-specific macros (migrated from the OPEX_DE deck)
+% -----------------------------------------------------------------------------
+% These were previously defined inline in the deck file so that the deck can now
+% stay content-only.  All visible design words are language-aware via section 5.
+
+% OPEX-specific green takeaway title, when needed.
+\newcommand{\opextakeaway}[1]{\takeaway[\tumOpexImplicationLabel]{#1}}
+
+% Orange question prompt box.
+\newcommand{\question}[1]{\begin{alertblock}{\tumQuestionLabel}#1\end{alertblock}}
+
+% Section-intro frame: title + focus card on the left, image on the right.
+\newcommand{\sectionimage}[3]{%
+\begin{frame}{#1}
+\begin{columns}[T,onlytextwidth]
+\column{0.40\textwidth}
+\card{\tumFocusLabel}{#2}
+\column{0.56\textwidth}
+\includegraphics[width=\linewidth,height=0.53\textheight,keepaspectratio]{#3}
+\end{columns}
+\end{frame}}
+
+% Full-bleed figure frame with a grey source line underneath.
+\newcommand{\paperfigure}[3]{%
+\begin{frame}{#1}
+\begin{center}
+\includegraphics[width=\linewidth,height=0.81\textheight,keepaspectratio]{#2}
+\end{center}
+\begin{flushleft}\footnotesize\singlespacing
+\color{secondaryGray}\tumSourceLabel: #3
+\end{flushleft}
+\end{frame}}
+
+% Critical self-reflection note plus a green frame border and badge.
+\newcommand{\CRITICALREFLECTION}{%
+\emph{\color{gray}\footnotesize \tumCriticalReflectionText}\vspace{2em}
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[
+      anchor=north east,
+      draw=tertiaryGreen,
+      text=tertiaryGreen,
+      line width=0.8pt,
+      rounded corners=0pt,
+      font=\sffamily\bfseries,
+      inner xsep=4pt,
+      inner ysep=2pt
+    ] at ([xshift=-1.35cm,yshift=-0.20cm]current page.north east) {\tumCriticalReflectionLabel};
+    \draw[
+      line width=4pt,
+      draw=tertiaryGreen,
+      rounded corners=0pt
+    ]
+    ([xshift=1pt,yshift=-1pt]current page.north west) rectangle
+    ([xshift=-2pt,yshift=2pt]current page.south east);
+  \end{tikzpicture}%
+}
+
+% Numbered table of contents and the recurring roadmap / agenda slides.
+\setcounter{tocdepth}{2}
+\setbeamertemplate{section in toc}{\textbf{\inserttocsectionnumber.\ \inserttocsection}\par}
+\setbeamertemplate{subsection in toc}{\hspace*{1.5em}\inserttocsectionnumber.\inserttocsubsectionnumber\ \inserttocsubsection\par}
+\AtBeginSection[]{%
+  \TumLayoutDispatch{\TumDefaultSectionPage}{\TumTUMSectionPage}{\TumMGTSectionPage}%
+}
+\AtBeginSubsection[]{
+  \begin{frame}{\tumAgendaLabel}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+

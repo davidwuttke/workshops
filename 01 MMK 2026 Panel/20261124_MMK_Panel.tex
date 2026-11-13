@@ -1,0 +1,125 @@
+% ---------------------------------------------------
+%
+% DOCUMENT SETUP
+%
+% ---------------------------------------------------
+%
+% MMK Heilbronn, 24 November 2026, 14:15-14:45
+% Panel "Can Industrial AI Turn Germany's Weaknesses into Strengths?"
+% with Sarah Engel (TRUMPF), Helmut Ahr (Horvath) and Michael Grunwald (CARIAD).
+%
+% Purpose: backdrop for the discussion part only. The academic framing runs
+% without slides. Each thesis pair stays on screen while the audience and the
+% panel take a side, so a slide has to be readable from the back of the hall:
+% one question, two theses, large type, no overlays or animations.
+%
+% Build from the repository root (the PDF lands in build/):
+%   latexmk "01 MMK 2026 Panel/20261124_MMK_Panel.tex"
+
+\documentclass[9pt,aspectratio=169]{beamer}
+
+\input{Beamer/input/preamble}
+\graphicspath{{figures/}{Beamer/figures/}}
+
+\TumDeckLayout{MGT}    % MGT blue-band title and section pages
+\TumDeckEnglish
+\renewcommand{\TumMGTSectionFooterText}{Wuttke | MMK Heilbronn | 24 November 2026}
+
+% ---------------------------------------------------
+%
+% DOCUMENT TITLE PAGE INFORMATION
+%
+% ---------------------------------------------------
+
+\title{Can Industrial AI Turn Germany's\texorpdfstring{\\}{ }Weaknesses into Strengths?}
+\subtitle{With Sarah Engel (TRUMPF), Helmut Ahr (Horváth) and Michael Grunwald (CARIAD)}
+\author[Wuttke]{%
+Prof. Dr. David Wuttke\inst{1}
+}
+
+\institute[shortinst]{%
+  \textsuperscript{1}Technical University of Munich, TUM School of Management,
+  TUM Campus Heilbronn, 74076 Heilbronn, Bildungscampus 9, Germany,
+  \href{mailto:david.wuttke@tum.de}{david.wuttke@tum.de}.%
+}
+\date{MMK Heilbronn, 24 November 2026}
+
+\setlength{\emergencystretch}{2em}
+
+% Clean PDF properties for the file that goes to the organisers (without this
+% the affiliation marker ends up in the author field).
+\hypersetup{pdfauthor={David Wuttke}}
+
+% ---------------------------------------------------
+% Local helpers for this deck
+% ---------------------------------------------------
+% Stage sizing: the question is the frame title, so it is set larger than in
+% the lecture decks and stays above the two theses in the visual hierarchy.
+\setbeamerfont{frametitle}{series=\bfseries,size=\huge}
+
+% Thesis row: letter tile on the left, thesis on the right. Both rows of a
+% pair have the same height, whatever the length of the text, and the text is
+% centred vertically. A is always blue and B always orange, on both slides, so
+% the colour marks the side to vote for and says nothing about which is right.
+\newlength{\thesistile}   \setlength{\thesistile}{1.45cm}
+\newlength{\thesisheight} \setlength{\thesisheight}{3.05cm}  % holds four lines
+\newlength{\thesispad}    \setlength{\thesispad}{0.45cm}
+\newlength{\thesisgap}    \setlength{\thesisgap}{0.15cm}  % added to the paragraph skip
+
+% Key words that carry the contrast within a pair. TUM orange is too light for
+% text on a projector, so thesis B uses a darker shade of it; the tile keeps
+% the original orange.
+\colorlet{thesisBtext}{tertiaryOrange!80!black}
+\newcommand{\keyA}[1]{{\color{primaryBlue}\textbf{#1}}}
+\newcommand{\keyB}[1]{{\color{thesisBtext}\textbf{#1}}}
+
+% #1 colour, #2 tint of the text field in percent, #3 letter, #4 thesis
+\newcommand{\thesisrow}[4]{%
+\par\noindent
+\begin{tikzpicture}
+\node[anchor=north west, inner sep=0pt, outer sep=0pt, fill=#1, text=white,
+      minimum width=\thesistile, minimum height=\thesisheight,
+      font=\bfseries\fontsize{26}{26}\selectfont] (letter) at (0,0) {#3};
+\node[anchor=north west, inner xsep=\thesispad, inner ysep=0pt, outer sep=0pt,
+      fill=#1!#2, text=black,
+      text width=\dimexpr\linewidth-\thesistile-2\thesispad\relax,
+      minimum height=\thesisheight, align=flush left,
+      font=\fontsize{14}{15.5}\selectfont] at (letter.north east) {#4};% Metropolis stretches the leading by 1.15
+\end{tikzpicture}\par}
+
+\newcommand{\thesisA}[1]{\thesisrow{primaryBlue}{7}{A}{#1}}
+\newcommand{\thesisB}[1]{\thesisrow{tertiaryOrange}{12}{B}{#1}}
+
+% One pair per slide: #1 question, #2 thesis A, #3 thesis B.
+\newcommand{\thesispair}[3]{%
+\begin{frame}[t]{#1}
+\vspace{\thesisgap}
+\thesisA{#2}
+\vspace{\thesisgap}
+\thesisB{#3}
+\end{frame}}
+
+\begin{document}
+\maketitleframe
+
+% ---------------------------------------------------
+%
+% CONTENT STARTS HERE
+%
+% ---------------------------------------------------
+
+% SPEAKER NOTE (6 min): Present the pair in thirty seconds. Show of hands in
+% the audience, then each panelist takes a side, A or B, with one reason or
+% one example, about one minute each. No "both are right": which one would
+% you bet your company on?
+\thesispair{The boomers. What is industrial AI for?}
+{If industrial AI helps, it is because we can finally afford \keyA{fewer expensive skilled workers}.}
+{If industrial AI helps, it is because it catches the \keyB{boomers' knowledge} before it retires.}
+
+% SPEAKER NOTE (6 min): Same procedure. The pair is independent of the first
+% one, any combination of answers is possible.
+\thesispair{Gen Z. What does industrial AI do to them?}
+{For Gen Z, industrial AI is a \keyA{shortcut} to expertise. They start where the boomers ended.}
+{For Gen Z, industrial AI is a \keyB{substitute} for expertise. They never have to learn what the machine already knows and will never become as much experts as boomers are.}
+
+\end{document}
