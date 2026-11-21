@@ -1,0 +1,15 @@
+Werkzeug: integrierte Bildgenerierung (image_gen), anschließend JPG-Export mit Qualität 95.
+Referenzen: Feuer_Orden_O.jpg; Blitz_Wegweiser_A6.jpg
+Druckformat: A6, 105 x 148 mm. Beschriftung entfernt, Rätselbuchstabe beibehalten.
+
+Prompt:
+Use case: precise-object-edit.
+Asset type: a printable A6 portrait forest trail marker card for a children's elemental treasure hunt.
+Turn the supplied elemental medal poster into a simple, highly legible wayfinding marker. Children already hold the original medal and need to recognize this matching symbol at a distance in the forest.
+Maintain the original polished, colorful dimensional illustration style and the very specific elemental symbol, colors and hidden capital letter. Remove the whole gold circular medal frame, ALL four gold ornamental clasps, and the entire large word underneath. No circular badge, no medallion, no coin, no rosette, no gold rim, no award decoration.
+Instead use a plain rectangular white card with a single bold simple rounded rectangular border in the element's dark accent color, comfortably inset from a clean white print margin. The dominant standalone elemental symbol is centered on the card and fills most of the width and height; it is recognizable even at small A6 print size. A soft localized element-colored glow immediately behind the symbol is fine, but the outer background is clean bright white and visually quiet. No decorative corner flourishes, no landscape, no wood plank, no forest background, no photographic mockup, no holes, no mounting hardware, no arrows.
+Use A6 portrait proportions, 105:148. Keep the complete border and icon visible with safe printing margins. Single finished flat card only. No bottom title or blank title panel, no readable word, no caption, no numbers, no watermark, no logo. The ONLY character allowed is the specified original puzzle capital letter integrated inside the elemental symbol; retain it clearly and at least as readable as in the source.
+Input image 1: the original Feuer medal; use as the exact reference for the symbol, its material and colors, and its retained puzzle letter.
+Input image 2: the approved LIGHTNING TRAIL CARD; match its plain white background, single thick rounded rectangular border geometry, border position and width, large standalone symbol presentation, white margins and absence of title. Do NOT copy image 2's lightning symbol, letter T or purple colors. Adapt only the elemental symbol and border color for this new card.
+Element: FIRE. Preserve the reference's large dramatic flame emblem, multiple curling tongues, rich red and orange inside with brilliant yellow/gold edges. Keep the distinct capital "O" as a closed oval swirling gold-orange flame loop inside the lower central part of the flame, about one fifth of the full flame height, recognizable as the letter O just like the source. Place this large standalone flame on the white card with only a localized soft warm glow immediately around it. Border color: dark saturated red. Remove the word FEUER completely. Do not include a lightning bolt, T or purple. No standalone added typography; the O is part of the flame drawing.
+

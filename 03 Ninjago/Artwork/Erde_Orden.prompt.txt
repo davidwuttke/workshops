@@ -1,0 +1,14 @@
+Werkzeug: integrierte Bildgenerierung (image_gen), anschließend JPG-Export mit Qualität 95.
+Stil- und Layoutreferenzen: Feuer_Orden_O.jpg, Wasser_Orden_A.jpg, Eis_Orden_U.jpg, Blitz_Orden_T.jpg
+
+Prompt:
+Use case: illustration-story.
+Asset type: Printable fifth elemental medal poster for the existing children's Ninjago rally medal set.
+Input images: All four supplied images are style and layout references only: fire, water, ice, lightning. Create ONE new EARTH medal poster, not a collage.
+Primary request: Match this set extremely closely: A4 portrait proportions, narrow white print border, same large complete circular medal occupying the upper roughly 70 percent, same polished gold double-ring frame and the same four raised ornamental gold clasps at top, bottom, left and right. Match the rich, crisp, vivid, dimensional fantasy illustration style, dramatic highlights, bevels and depth. Keep the large element name below the medal in the same location and same bold sculpted lettering.
+Subject: Earth as the elemental power of rock and stone. Inside the medal, show a powerful, clearly readable emblem of a rugged angular rock formation: one large central faceted crag with smaller rocks at its base, layered stone planes and natural jagged cracks. It should be an iconic rock emblem filling the central disc, not a distant landscape or planet. Warm amber light shines delicately through some stone cracks. The rock silhouette and cracks must remain entirely natural, never shaped into letters or numbers.
+Palette and materials: charcoal and dark umber rock, warm ochre and bronze planes, luminous golden edges; dark brown stone-textured inset in the circular band; polished bright gold metal frame matching the references.
+Backdrop: light warm sand and cream, radiant beams behind the medal, stylized swirling dust accents near the corners that echo the ornamental cloud swirls in the references. Friendly adventurous mood, print-ready.
+Text (verbatim): "ERDE" only, below the medal, spelled E-R-D-E, large dark brown/bronze faceted letters with bright golden outlines and dimensional shadows, matching the type style of the reference posters.
+Critical constraints: NO LETTER, initial, number, rune, typographic mark or hidden puzzle character anywhere inside the center of the medal. The center contains ONLY the rock emblem and natural stone texture. The only readable text anywhere is ERDE below the medal. Preserve the reference rim ornaments as decorations. No people, no characters, no faces, no logos, no watermark, no planet Earth, no globe, no fire motif, no lightning motif, no ice, no water. Entire poster and medal fully visible, no cropping, no mockup.
+

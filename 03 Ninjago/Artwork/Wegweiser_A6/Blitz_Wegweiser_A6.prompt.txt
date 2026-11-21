@@ -1,0 +1,14 @@
+Werkzeug: integrierte Bildgenerierung (image_gen), anschließend JPG-Export mit Qualität 95.
+Referenzen: Blitz_Orden_T.jpg
+Druckformat: A6, 105 x 148 mm. Beschriftung entfernt, Rätselbuchstabe beibehalten.
+
+Prompt:
+Use case: precise-object-edit.
+Asset type: a printable A6 portrait forest trail marker card for a children's elemental treasure hunt.
+Turn the supplied elemental medal poster into a simple, highly legible wayfinding marker. Children already hold the original medal and need to recognize this matching symbol at a distance in the forest.
+Maintain the original polished, colorful dimensional illustration style and the very specific elemental symbol, colors and hidden capital letter. Remove the whole gold circular medal frame, ALL four gold ornamental clasps, and the entire large word underneath. No circular badge, no medallion, no coin, no rosette, no gold rim, no award decoration.
+Instead use a plain rectangular white card with a single bold simple rounded rectangular border in the element's dark accent color, comfortably inset from a clean white print margin. The dominant standalone elemental symbol is centered on the card and fills most of the width and height; it is recognizable even at small A6 print size. A soft localized element-colored glow immediately behind the symbol is fine, but the outer background is clean bright white and visually quiet. No decorative corner flourishes, no landscape, no wood plank, no forest background, no photographic mockup, no holes, no mounting hardware, no arrows.
+Use A6 portrait proportions, 105:148. Keep the complete border and icon visible with safe printing margins. Single finished flat card only. No bottom title or blank title panel, no readable word, no caption, no numbers, no watermark, no logo. The ONLY character allowed is the specified original puzzle capital letter integrated inside the elemental symbol; retain it clearly and at least as readable as in the source.
+Input image 1: exact LIGHTNING medal reference and edit target.
+Element: LIGHTNING. Retain the original large dramatic bright golden yellow zigzag lightning bolt with white-gold electrical veins. Retain the clear capital "T" made of white-gold veins at the center of the bolt, a horizontal bar with a centered downward vertical stem, at least one fifth of the bolt height. The motif may have short controlled violet/gold electric sparks and a soft purple glow to retain instant recognition against the white card. Border color: dark saturated purple. The gold is in the lightning symbol itself, never a medal frame. Remove the bottom word BLITZ completely.
+
