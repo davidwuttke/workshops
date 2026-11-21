@@ -1,0 +1,61 @@
+# Generated LaTeX output. latexmk writes PDFs to build/ and every auxiliary
+# file to build_aux/; both are rebuilt on demand.
+build/
+**/build/
+build_aux/
+**/build_aux/
+.vscode/latex-out/
+
+# Auxiliary files from builds run in place (next to the sources)
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.brf
+*.fdb_latexmk
+*.fls
+*.glo
+*.gls
+*.idx
+*.ilg
+*.ind
+*.ist
+*.loa
+*.lof
+*.log
+*.lot
+*.nav
+*.out
+*.run.xml
+*.snm
+*.spl
+*.synctex
+*.synctex.gz
+*.synctex(busy)
+*.toc
+*.vrb
+*.xdv
+*-blx.bib
+*.dvi
+*.ps
+
+# Unlike the ExEd repo, *.pdf is NOT ignored here: the workshop folders keep
+# their source studies as PDFs. Compiled decks stay out of git via build/.
+
+# Local build control and editor settings (windows-specific, not for Overleaf)
+.latexmkrc
+.vscode/
+
+# Local Claude Code notes
+CLAUDE.md
+CLAUDE.local.md
+
+# Editor backups and temp files
+*~
+*.bak
+*.swp
+*.swo
+*.tmp
+.DS_Store
+Thumbs.db
+desktop.ini

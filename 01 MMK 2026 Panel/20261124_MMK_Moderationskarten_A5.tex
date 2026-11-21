@@ -1,0 +1,236 @@
+% ---------------------------------------------------
+%
+% MODERATION CARDS, DIN A5 portrait, one card per page
+%
+% ---------------------------------------------------
+%
+% MMK Heilbronn, 24 November 2026, 14:15-14:45
+% Panel "Can Industrial AI Turn Germany's Weaknesses into Strengths?"
+%
+% Five cards to hold on stage: one per impulse speaker (who, a show-of-hands
+% question for the room, the hand-over line), then one per thesis pair.
+% Everything on a card is meant to be read at arm's length under stage light:
+% few words, large type, the spoken lines in English.
+% The full version with sources and reserve questions is "moderation deck.md".
+%
+% Build from the repository root (the PDF lands in build/):
+%   latexmk "01 MMK 2026 Panel/20261124_MMK_Moderationskarten_A5.tex"
+% Print on A5 paper, or two cards per A4 sheet and cut.
+
+\documentclass[12pt]{article}
+
+\usepackage[a5paper,left=10mm,right=10mm,top=9mm,bottom=9mm]{geometry}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[utf8]{inputenc}
+  \usepackage[T1]{fontenc}
+\fi
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\raggedright
+\frenchspacing
+\hyphenpenalty=10000 \exhyphenpenalty=10000   % cue cards: never break a word
+
+% TUM colours, as in the slide deck: A is blue, B is orange.
+\definecolor{primaryBlue}{RGB}{0,101,189}
+\definecolor{tertiaryOrange}{RGB}{227,114,34}
+\definecolor{secondaryGray}{RGB}{102,102,102}
+
+% ---------------------------------------------------
+% Card elements
+% ---------------------------------------------------
+
+% Header band: #1 kicker (left), #2 time (right), #3 name or title, #4 role or subtitle
+\newcommand{\cardhead}[4]{%
+\noindent
+\begin{tikzpicture}
+\node[fill=primaryBlue, text=white, inner xsep=4mm, inner ysep=3.2mm, outer sep=0pt,
+      text width=\dimexpr\linewidth-8mm\relax, align=left] {%
+  {\fontsize{9}{11}\selectfont\bfseries #1\hfill #2\par}\vspace{1.6mm}
+  {\fontsize{21}{24}\selectfont\bfseries #3\par}\vspace{0.8mm}
+  {\fontsize{12}{15}\selectfont #4\par}};
+\end{tikzpicture}\par}
+
+% Small blue label above each block
+\newcommand{\lbl}[1]{\par\vspace{4.2mm}%
+  {\fontsize{8.5}{10}\selectfont\bfseries\color{primaryBlue}\MakeUppercase{#1}\par}\vspace{1.4mm}}
+
+% Two or three facts about the speaker
+\newenvironment{facts}{%
+  \begin{itemize}[leftmargin=4.5mm, labelsep=2mm, itemsep=1.6mm, topsep=0mm, parsep=0mm,
+                  partopsep=0mm, label={\color{primaryBlue}\textbullet}]%
+  \fontsize{13}{16.5}\selectfont}{\end{itemize}}
+
+% Question to the room: #1 question, #2 what to ask hands for
+\newcommand{\ask}[2]{%
+\par\noindent
+\begin{tikzpicture}
+\node[fill=primaryBlue!8, inner xsep=4mm, inner ysep=3.6mm, outer sep=0pt,
+      text width=\dimexpr\linewidth-8mm\relax, align=left] (q) {%
+  {\fontsize{15.5}{20}\selectfont #1\par}\vspace{2.6mm}
+  {\fontsize{11.5}{14}\selectfont\bfseries\color{primaryBlue}#2\par}};
+\draw[primaryBlue, line width=1.4mm] ([xshift=0.7mm]q.north west) -- ([xshift=0.7mm]q.south west);
+\end{tikzpicture}\par}
+
+% The line that hands over to the speaker
+\newcommand{\handover}[1]{\par{\fontsize{17}{21.5}\selectfont\bfseries #1\par}}
+
+% Plain note, e.g. what to listen for
+\newcommand{\note}[1]{\par{\fontsize{12}{15.5}\selectfont #1\par}}
+
+% Footer and page break
+\newcommand{\cardfoot}[1]{\par\vfill
+  {\color{secondaryGray}\rule{\linewidth}{0.4pt}\par\vspace{1.2mm}
+   \fontsize{9}{11}\selectfont #1\par}\newpage}
+
+% Thesis as on the slide: #1 colour, #2 letter, #3 text
+\newcommand{\thesis}[3]{%
+\par\noindent
+\begin{tikzpicture}
+\node[fill=#1!10, inner xsep=3.2mm, inner ysep=2.8mm, outer sep=0pt, anchor=north west,
+      text width=\dimexpr\linewidth-9mm-6.4mm\relax, align=left,
+      font=\fontsize{12}{15.5}\selectfont] (t) at (9mm,0) {#3};
+\fill[#1] (0,0) rectangle (t.south west);
+\node[text=white, inner sep=0pt, font=\bfseries\fontsize{17}{17}\selectfont]
+      at ($(0,0)!0.5!(t.south west)$) {#2};
+\end{tikzpicture}\par\vspace{1.6mm}}
+
+% Question to one panelist on a pair card: #1 name, #2 question
+\newcommand{\q}[2]{\par\vspace{2.6mm}%
+  {\fontsize{12}{15.5}\selectfont{\bfseries\color{primaryBlue}#1}\enspace #2\par}}
+
+\newcommand{\then}{\,$\rightarrow$\,}
+
+\begin{document}
+
+% ---------------------------------------------------
+% CARD 1: Helmut Ahr
+% ---------------------------------------------------
+\cardhead{CARD 1 OF 5 \textbar{} IMPULSE 1}{14:20 \textbar{} 4 MIN}{Helmut Ahr}{CEO, Horváth}
+
+\lbl{Who}
+\begin{facts}
+\item 26 years at Horváth, CEO since 2022
+\item Leads Technology \& AI consulting himself
+\item Close to home: the Péter Horváth Foundation funds the chair for Controlling \& AI at TUM Campus Heilbronn
+\end{facts}
+
+\lbl{Ask the room}
+\ask{Humanoid robots are entering the shop floor. Would you feel you should be among the first, or rather wait until we have more insights from peers?}
+    {Hands: among the first? \qquad Rather wait?}
+
+\lbl{Hand over}
+\handover{``You should be fast,'' says Helmut Ahr.}
+
+\lbl{Listen for}
+\note{1 humanoid for 2.5 workers \textbar{} 10 euros per hour \textbar{} 50\,\% of tasks by 2040.\\[1mm]
+Six slides in four minutes: watch the timer.}
+
+\cardfoot{Next: Sarah Engel, 14:24}
+
+% ---------------------------------------------------
+% CARD 2: Sarah Engel
+% ---------------------------------------------------
+\cardhead{CARD 2 OF 5 \textbar{} IMPULSE 2}{14:24 \textbar{} 4 MIN}{Sarah Engel}{Head of AI, TRUMPF}
+
+\lbl{Who}
+\begin{facts}
+\item Leadership roles at IBM and Capgemini: took companies from their first AI strategy to the enterprise-wide rollout
+\item Studied cognitive science and neuroinformatics in Tübingen and Ulm
+\item Close to home: TRUMPF joined IPAI here in Heilbronn this July
+\end{facts}
+
+\lbl{Ask the room}
+\ask{An AI assistant suggests the settings for your most expensive machine. Do you press start, or do you ask your most experienced operator first?}
+    {Hands: press start? \qquad Ask the expert first?}
+
+\lbl{Hand over}
+\handover{AI that delivers real value, and that people trust: that is Sarah Engel's job at TRUMPF.}
+
+\lbl{Listen for}
+\note{The Cutting Assistant: what happened to the operator's skills, and how did TRUMPF measure it?}
+
+\cardfoot{Next: Michael Grunwald, 14:28}
+
+% ---------------------------------------------------
+% CARD 3: Michael Grunwald
+% ---------------------------------------------------
+\cardhead{CARD 3 OF 5 \textbar{} IMPULSE 3}{14:28 \textbar{} 4 MIN}{Michael Grunwald}{Head of Architecture \& Cross-Technologies, CARIAD}
+
+\lbl{Who}
+\begin{facts}
+\item Software and system architecture at CARIAD, the Volkswagen Group's software company
+\item Also vehicle platforms, over-the-air technologies and AI-driven engineering
+\item His organisation includes CARIAD's R\&D AI Factory: AI agents in automotive software development
+\end{facts}
+
+\lbl{Ask the room}
+\ask{Software in five years: is it built by large teams of engineers, or by a few top people steering a fleet of AI agents?}
+    {Hands: large teams? \qquad A few, with agents?}
+
+\lbl{Hand over}
+\handover{Michael Grunwald's AI Factory at CARIAD is finding out right now.}
+
+\lbl{Listen for}
+\note{Who does he still need on his teams? Who becomes the next architect?}
+
+\cardfoot{Next: discussion, pair 1, 14:32}
+
+% ---------------------------------------------------
+% CARD 4: Pair 1
+% ---------------------------------------------------
+\cardhead{CARD 4 OF 5 \textbar{} PAIR 1 \textbar{} SLIDE 1/2}{14:32 \textbar{} 6 MIN}{The boomers}{What is industrial AI for?}
+
+\vspace{4mm}
+\thesis{primaryBlue}{A}{If industrial AI helps, it is because we can finally afford \textbf{fewer expensive skilled workers}.}
+\thesis{tertiaryOrange}{B}{If industrial AI helps, it is because it catches the \textbf{boomers' knowledge} before it retires.}
+
+\lbl{How}
+\note{Hands in the room: A or B? Then \textbf{Ahr\then Engel\then Grunwald}.\\
+A or B, one reason, one minute. No ``both are right''.}
+
+\lbl{One question each}
+\q{Ahr}{One humanoid for 2.5 workers. But your robots learn from today's skilled workers. So: replace them, or learn from them before they retire?}
+\q{Engel}{The Cutting Assistant needs no cutting experience. Is that A or B: fewer experienced operators, or keeping what they know?}
+\q{Grunwald}{30 percent leaner, 1,000 AI experts in Berlin. Fewer expensive engineers, or knowledge brought back in-house?}
+
+\lbl{If time}
+\note{To Ahr: the boomers are gone by 2037, your robots reach 50 percent after 2040. Who runs the lines in between?}
+
+\cardfoot{Next: pair 2, 14:38}
+
+% ---------------------------------------------------
+% CARD 5: Pair 2 and closing line
+% ---------------------------------------------------
+\cardhead{CARD 5 OF 5 \textbar{} PAIR 2 \textbar{} SLIDE 2/2}{14:38 \textbar{} 6 MIN}{Gen Z}{What does industrial AI do to them?}
+
+\vspace{4mm}
+\thesis{primaryBlue}{A}{For Gen Z, industrial AI is a \textbf{shortcut} to expertise. They start where the boomers ended.}
+\thesis{tertiaryOrange}{B}{For Gen Z, industrial AI is a \textbf{substitute} for expertise. They never have to learn what the machine already knows and will never become as much experts as boomers are.}
+
+\lbl{How}
+\note{Hands in the room: A or B? Then \textbf{Engel\then Grunwald\then Ahr}.}
+
+\lbl{One question each}
+\q{Engel}{A beginner cuts good parts on day one. Two years later: an expert, or a beginner with a very good assistant?}
+\q{Grunwald}{If AI writes the simple code, who becomes your next architect?}
+\q{Ahr}{Your roadmap reads like an apprenticeship: the robot takes the simple tasks first. Where does someone who starts in 2030 learn to handle a disruption?}
+
+\lbl{Close, 14:44}
+{\fontsize{14.5}{18.5}\selectfont\bfseries Both A options show up in this year's numbers.\\
+Both B options show up in ten years.\par}
+\vspace{1mm}
+\note{That is why companies end up with fewer people and no new experts without ever deciding to.}
+
+\cardfoot{End: 14:45}
+
+\end{document}
