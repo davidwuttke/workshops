@@ -18,9 +18,9 @@ B: For Gen Z, industrial AI is a substitute for expertise. They never have to le
 
 Wortlaut wie auf den Folien (20261124_MMK_Panel.tex) und in der Mail an die Panelisten (moderation_en.md).
 
-**Auflösung zum Schluss:** Both A options show up in this year's numbers. Both B options show up in ten years. That is why companies end up with fewer people and no new experts without ever deciding to.
+**Ausblick zum Schluss, Stand 23.11.2026:** Skilled labour continues to matter. If we get physical AI right, we can capture the boomers' knowledge, augment it and share it with the next generation of skilled workers. They will take on new job profiles, and I am happy to contribute to educating that next generation here at TUM in Heilbronn.
 
-Variante mit Ahrs Zahlen, falls bis dahin niemand eine Zahl für B genannt hat: We heard a number for A today: one robot for 2.5 workers, at ten euros an hour. Nobody gave us a number for B. That is why A happens by default.
+Aktuelle Stichworte für Einstieg und Schluss sowie der Ablauf mit vier Diskutierenden: siehe „moderation deck.md“, Karten 1, 2 und 9.
 
 ## Stand 13.11.2026: Ahrs Folien und neue Besetzung
 
@@ -111,7 +111,7 @@ Wenn Ahr sagt, Humanoide seien erst 2040 ein Thema: Seine Folie 6 sagt, First Mo
 
 1. Paar 1 auf die Folie, 30 Sekunden. Publikum stimmt per Hand. Dann die drei nacheinander: A oder B, ein Grund oder ein Fall, eine Minute. Reihenfolge: Ahr, Engel, Grunwald.
 2. Paar 2 auf die Folie. Dasselbe. Reihenfolge: Engel, Grunwald, Ahr.
-3. Auflösung mit dem Messsatz.
+3. Ausblick: Fachkräfte, Weitergabe von Erfahrungswissen, neue Berufsprofile und Ausbildung an der TUM in Heilbronn.
 
 ---
 
@@ -222,11 +222,11 @@ Target: pair 2, both sides. He decides the vote.
 
 ## Prof. David Wuttke, TUM (academic framing, speaks before the three)
 
-Frame: How does industrial AI affect skills? What do field and lab studies show?
+Frame: Germany's skilled labour — a strength, a weakness, and what can physical AI change?
 
-Content: the retirement number, the affordance argument, two AR studies, the two pairs of theses.
+Content, updated 23 November 2026: welcome to Heilbronn and the Bildungscampus; focus on skilled labour; two AR studies in manufacturing and repair. GPS analogy for AR guidance; remote support and the missing learning gains from partner exposure and team familiarity under AR in our study. Management must understand the interaction between technology and the workforce before scaling. Then three impulses and two pairs of theses.
 
-Target: pair 2, side B, with evidence.
+Outlook: capture the boomers' knowledge, augment it and share it with the next generation. New job profiles and a role for education at TUM in Heilbronn. Speaking cues: moderation deck.md, cards 1, 2 and 9.
 
 ## Timeline
 

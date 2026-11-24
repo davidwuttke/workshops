@@ -1,25 +1,30 @@
 % ---------------------------------------------------
 %
-% MODERATION CARDS, DIN A5 portrait, one card per page
+% MODERATION CARDS, DIN A5 landscape, cover plus one card per page
 %
 % ---------------------------------------------------
 %
 % MMK Heilbronn, 24 November 2026, 14:15-14:45
 % Panel "Can Industrial AI Turn Germany's Weaknesses into Strengths?"
 %
-% Five cards to hold on stage: one per impulse speaker (who, a show-of-hands
-% question for the room, the hand-over line), then one per thesis pair.
+% Nine cards to hold on stage: two opening cards, three impulse speakers,
+% discussion guest Eike Wibrow (no impulse), two thesis pairs, and the outlook.
 % Everything on a card is meant to be read at arm's length under stage light:
 % few words, large type, the spoken lines in English.
 % The full version with sources and reserve questions is "moderation deck.md".
 %
 % Build from the repository root (the PDF lands in build/):
-%   latexmk "01 MMK 2026 Panel/20261124_MMK_Moderationskarten_A5.tex"
-% Print on A5 paper, or two cards per A4 sheet and cut.
+%   latexmk -pdf -outdir=build -auxdir=build_aux "01 MMK 2026 Panel/20261124_MMK_Moderationskarten_A5.tex"
+% Export the cover separately for use as the outward-facing card/backing:
+%   pdfseparate -f 1 -l 1 build/20261124_MMK_Moderationskarten_A5.pdf build/20261124_MMK_Titelseite_A5.pdf
+% Export Wibrow's introduction separately:
+%   pdfseparate -f 7 -l 7 build/20261124_MMK_Moderationskarten_A5.pdf build/20261124_MMK_Eike_Wibrow_A5.pdf
+% Wuttke's own speaking cards are PDF pages 2, 3 and 10.
+% Print at actual size on A5 landscape, or two pages per A4 portrait sheet.
 
 \documentclass[12pt]{article}
 
-\usepackage[a5paper,left=10mm,right=10mm,top=9mm,bottom=9mm]{geometry}
+\usepackage[a5paper,landscape,left=10mm,right=10mm,top=9mm,bottom=9mm]{geometry}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[utf8]{inputenc}
@@ -28,6 +33,8 @@
 \usepackage{helvet}
 \renewcommand{\familydefault}{\sfdefault}
 \usepackage{xcolor}
+\usepackage{graphicx}
+\graphicspath{{figures/}{../figures/}}
 \usepackage{tikz}
 \usetikzlibrary{calc}
 \usepackage{enumitem}
@@ -49,99 +56,195 @@
 % Card elements
 % ---------------------------------------------------
 
+% Cover/backing: white margins allow printing without a borderless printer.
+\newcommand{\coverpage}{%
+  \noindent\begin{minipage}[t]{0.65\linewidth}
+    \vspace{0pt}
+    {\color{primaryBlue}\fontsize{12}{15}\selectfont\bfseries
+      TUM School of Management\par}
+    \vspace{1mm}
+    {\color{secondaryGray}\fontsize{11}{14}\selectfont TUM Campus Heilbronn\par}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{40mm}
+    \vspace{0pt}\includegraphics[width=\linewidth]{TUM_Logo_blau_transparent.png}
+  \end{minipage}\par
+  \vfill
+  {\color{primaryBlue}\fontsize{11}{14}\selectfont\bfseries MMK HEILBRONN 2026\par}
+  \vspace{4mm}
+  {\color{primaryBlue}\fontsize{27}{32}\selectfont\bfseries
+    Can Industrial AI Turn\\
+    Germany's Weaknesses\\
+    into Strengths?\par}
+  \vspace{5mm}
+  {\color{primaryBlue}\rule{28mm}{1.2pt}\par}
+  \vfill
+  {\fontsize{12}{15}\selectfont\bfseries Prof. Dr. David Wuttke\par}
+  \vspace{1.5mm}
+  {\color{secondaryGray}\fontsize{10}{13}\selectfont
+    Moderation\hfill 24 November 2026\par}
+  \newpage}
+
+% Two fixed columns keep each card together on one landscape page.
+\newcommand{\cardcolumns}[2]{%
+  \noindent\begin{minipage}[t]{0.45\linewidth}\vspace{0pt}\raggedright
+    #1
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.51\linewidth}\vspace{0pt}\raggedright
+    #2
+  \end{minipage}\par}
+
 % Header band: #1 kicker (left), #2 time (right), #3 name or title, #4 role or subtitle
 \newcommand{\cardhead}[4]{%
 \noindent
 \begin{tikzpicture}
-\node[fill=primaryBlue, text=white, inner xsep=4mm, inner ysep=3.2mm, outer sep=0pt,
+\node[fill=primaryBlue, text=white, inner xsep=4mm, inner ysep=2.4mm, outer sep=0pt,
       text width=\dimexpr\linewidth-8mm\relax, align=left] {%
-  {\fontsize{9}{11}\selectfont\bfseries #1\hfill #2\par}\vspace{1.6mm}
-  {\fontsize{21}{24}\selectfont\bfseries #3\par}\vspace{0.8mm}
-  {\fontsize{12}{15}\selectfont #4\par}};
+  {\fontsize{9}{11}\selectfont\bfseries #1\hfill #2\par}\vspace{1mm}
+  {\fontsize{21}{23}\selectfont\bfseries #3\par}\vspace{0.6mm}
+  {\fontsize{11}{13}\selectfont #4\par}};
 \end{tikzpicture}\par}
 
 % Small blue label above each block
-\newcommand{\lbl}[1]{\par\vspace{4.2mm}%
-  {\fontsize{8.5}{10}\selectfont\bfseries\color{primaryBlue}\MakeUppercase{#1}\par}\vspace{1.4mm}}
+\newcommand{\lbl}[1]{\par\vspace{3mm}%
+  {\fontsize{8.5}{10}\selectfont\bfseries\color{primaryBlue}\MakeUppercase{#1}\par}\vspace{1mm}}
 
 % Two or three facts about the speaker
 \newenvironment{facts}{%
-  \begin{itemize}[leftmargin=4.5mm, labelsep=2mm, itemsep=1.6mm, topsep=0mm, parsep=0mm,
+  \begin{itemize}[leftmargin=4.5mm, labelsep=2mm, itemsep=1.4mm, topsep=0mm, parsep=0mm,
                   partopsep=0mm, label={\color{primaryBlue}\textbullet}]%
-  \fontsize{13}{16.5}\selectfont}{\end{itemize}}
+  \fontsize{12}{15}\selectfont}{\end{itemize}}
+
+% Larger keywords for the moderator's own opening and outlook.
+\newenvironment{cues}{%
+  \begin{itemize}[leftmargin=4.5mm, labelsep=2mm, itemsep=2mm, topsep=0mm, parsep=0mm,
+                  partopsep=0mm, label={\color{primaryBlue}\textbullet}]%
+  \fontsize{13.5}{17}\selectfont}{\end{itemize}}
 
 % Question to the room: #1 question, #2 what to ask hands for
 \newcommand{\ask}[2]{%
 \par\noindent
 \begin{tikzpicture}
-\node[fill=primaryBlue!8, inner xsep=4mm, inner ysep=3.6mm, outer sep=0pt,
-      text width=\dimexpr\linewidth-8mm\relax, align=left] (q) {%
-  {\fontsize{15.5}{20}\selectfont #1\par}\vspace{2.6mm}
+\node[fill=primaryBlue!8, inner xsep=4mm, inner ysep=3mm, outer sep=0pt,
+      text width=\dimexpr\linewidth-8mm\relax, align=flush left] (q) {%
+  {\fontsize{15}{18.5}\selectfont #1\par}\vspace{2.6mm}
   {\fontsize{11.5}{14}\selectfont\bfseries\color{primaryBlue}#2\par}};
 \draw[primaryBlue, line width=1.4mm] ([xshift=0.7mm]q.north west) -- ([xshift=0.7mm]q.south west);
 \end{tikzpicture}\par}
 
 % The line that hands over to the speaker
-\newcommand{\handover}[1]{\par{\fontsize{17}{21.5}\selectfont\bfseries #1\par}}
+\newcommand{\handover}[1]{\par{\fontsize{15}{18.5}\selectfont\bfseries #1\par}}
 
 % Plain note, e.g. what to listen for
-\newcommand{\note}[1]{\par{\fontsize{12}{15.5}\selectfont #1\par}}
+\newcommand{\note}[1]{\par{\fontsize{11.5}{14.5}\selectfont #1\par}}
 
 % Footer and page break
-\newcommand{\cardfoot}[1]{\par\vfill
-  {\color{secondaryGray}\rule{\linewidth}{0.4pt}\par\vspace{1.2mm}
-   \fontsize{9}{11}\selectfont #1\par}\newpage}
+\newcommand{\cardfoot}[1]{\par\vspace{2mm}\vfill
+  \noindent\begin{minipage}{\linewidth}
+    \color{secondaryGray}\fontsize{9}{11}\selectfont
+    \rule{\linewidth}{0.4pt}\par\vspace{1.2mm}
+    #1\par
+  \end{minipage}\par\newpage}
 
 % Thesis as on the slide: #1 colour, #2 letter, #3 text
 \newcommand{\thesis}[3]{%
 \par\noindent
 \begin{tikzpicture}
-\node[fill=#1!10, inner xsep=3.2mm, inner ysep=2.8mm, outer sep=0pt, anchor=north west,
-      text width=\dimexpr\linewidth-9mm-6.4mm\relax, align=left,
-      font=\fontsize{12}{15.5}\selectfont] (t) at (9mm,0) {#3};
+\node[fill=#1!10, inner xsep=3.2mm, inner ysep=2.2mm, outer sep=0pt, anchor=north west,
+      text width=\dimexpr\linewidth-9mm-6.4mm\relax, align=flush left,
+      font=\fontsize{11.5}{14.5}\selectfont] (t) at (9mm,0) {#3};
 \fill[#1] (0,0) rectangle (t.south west);
 \node[text=white, inner sep=0pt, font=\bfseries\fontsize{17}{17}\selectfont]
       at ($(0,0)!0.5!(t.south west)$) {#2};
-\end{tikzpicture}\par\vspace{1.6mm}}
+\end{tikzpicture}\par\vspace{1mm}}
 
 % Question to one panelist on a pair card: #1 name, #2 question
-\newcommand{\q}[2]{\par\vspace{2.6mm}%
-  {\fontsize{12}{15.5}\selectfont{\bfseries\color{primaryBlue}#1}\enspace #2\par}}
+\newcommand{\q}[2]{\par\vspace{2mm}%
+  {\fontsize{11.5}{14.5}\selectfont{\bfseries\color{primaryBlue}#1}\enspace #2\par}}
 
-\newcommand{\then}{\,$\rightarrow$\,}
+\newcommand{\then}{\,{\fontsize{12}{12}\selectfont$\rightarrow$}\,}
 
 \begin{document}
 
-% ---------------------------------------------------
-% CARD 1: Helmut Ahr
-% ---------------------------------------------------
-\cardhead{CARD 1 OF 5 \textbar{} IMPULSE 1}{14:20 \textbar{} 4 MIN}{Helmut Ahr}{CEO, Horváth}
+\coverpage
 
+% ---------------------------------------------------
+% CARD 1: Welcome and focus, based on Wuttke's notes of 23 November 2026
+% ---------------------------------------------------
+\cardhead{CARD 1 OF 9 \textbar{} OPENING}{14:16 \textbar{} 1 MIN}{Welcome to Heilbronn}{Bildungscampus, skilled labour and physical AI}
+
+\cardcolumns{
+\lbl{Welcome}
+\handover{Wonderful to see you here in Heilbronn!}
+
+\lbl{Welcome}
+\begin{cues}
+\item Many strengths and weaknesses - one particularly relevant: skilled labor
+\item Some say strength, some say weakness. 
+\item How will physical AI change this tension? Let's figure this our and learn from our panel!
+\end{cues}
+}
+
+\lbl{The question}
+\handover{Skilled labour: a strength, a weakness --- and what can physical AI change?}
+
+\cardfoot{Next: AR Study}
+
+% ---------------------------------------------------
+% CARD 2: Research and transition
+% Study findings are supplied by Wuttke in his notes of 23 November 2026.
+% AR is the research example informing questions about physical AI;
+% no effect sizes or findings about all forms of physical AI are implied.
+% ---------------------------------------------------
+\cardhead{CARD 2 OF 9 \textbar{} RESEARCH}{14:17 \textbar{} 3 MIN}{Assistance and learning}{AR as implementation of physical AI}
+
+\cardcolumns{
+\lbl{Study 1: AR guidance}
+\begin{cues}
+\item How does physical AI through AR affect processes? What happens with your skilled labor when you introduce AR?
+\item Field experiment
+\item If done well, AR makes your skilled labor more efficient. But what about learning and optmization?
+\end{cues}
+
+\lbl{Transition, by 14:20}
+\handover{Three short impulses, then two pairs of opposing theses.}
+\vspace{1mm}
+\note{Ahr\then Engel\then Grunwald. Wibrow joins the discussion.}
+}
+
+\cardfoot{Next: introduce Helmut Ahr, 14:20 \textbar{} AR findings as a starting point for the physical AI discussion}
+
+% ---------------------------------------------------
+% CARD 3: Helmut Ahr
+% ---------------------------------------------------
+\cardhead{CARD 3 OF 9 \textbar{} IMPULSE 1}{14:20 \textbar{} 4 MIN}{Helmut Ahr}{CEO, Horváth}
+
+\cardcolumns{
 \lbl{Who}
 \begin{facts}
 \item 26 years at Horváth, CEO since 2022
 \item Leads Technology \& AI consulting himself
-\item Close to home: the Péter Horváth Foundation funds the chair for Controlling \& AI at TUM Campus Heilbronn
 \end{facts}
 
+\lbl{Listen for}
+\note{1 humanoid for 2.5 workers \textbar{} 10 euros per hour \textbar{} 50\,\% of tasks by 2040.\\[1mm]
+Six slides in four minutes: watch the timer.}
+}{
 \lbl{Ask the room}
 \ask{Humanoid robots are entering the shop floor. Would you feel you should be among the first, or rather wait until we have more insights from peers?}
     {Hands: among the first? \qquad Rather wait?}
 
 \lbl{Hand over}
 \handover{``You should be fast,'' says Helmut Ahr.}
-
-\lbl{Listen for}
-\note{1 humanoid for 2.5 workers \textbar{} 10 euros per hour \textbar{} 50\,\% of tasks by 2040.\\[1mm]
-Six slides in four minutes: watch the timer.}
+}
 
 \cardfoot{Next: Sarah Engel, 14:24}
 
 % ---------------------------------------------------
-% CARD 2: Sarah Engel
+% CARD 4: Sarah Engel
 % ---------------------------------------------------
-\cardhead{CARD 2 OF 5 \textbar{} IMPULSE 2}{14:24 \textbar{} 4 MIN}{Sarah Engel}{Head of AI, TRUMPF}
+\cardhead{CARD 4 OF 9 \textbar{} IMPULSE 2}{14:24 \textbar{} 4 MIN}{Sarah Engel}{Head of AI, TRUMPF}
 
+\cardcolumns{
 \lbl{Who}
 \begin{facts}
 \item Leadership roles at IBM and Capgemini: took companies from their first AI strategy to the enterprise-wide rollout
@@ -149,23 +252,25 @@ Six slides in four minutes: watch the timer.}
 \item Close to home: TRUMPF joined IPAI here in Heilbronn this July
 \end{facts}
 
+\lbl{Listen for}
+\note{The Cutting Assistant: what happened to the operator's skills, and how did TRUMPF measure it?}
+}{
 \lbl{Ask the room}
 \ask{An AI assistant suggests the settings for your most expensive machine. Do you press start, or do you ask your most experienced operator first?}
     {Hands: press start? \qquad Ask the expert first?}
 
 \lbl{Hand over}
 \handover{AI that delivers real value, and that people trust: that is Sarah Engel's job at TRUMPF.}
-
-\lbl{Listen for}
-\note{The Cutting Assistant: what happened to the operator's skills, and how did TRUMPF measure it?}
+}
 
 \cardfoot{Next: Michael Grunwald, 14:28}
 
 % ---------------------------------------------------
-% CARD 3: Michael Grunwald
+% CARD 5: Michael Grunwald
 % ---------------------------------------------------
-\cardhead{CARD 3 OF 5 \textbar{} IMPULSE 3}{14:28 \textbar{} 4 MIN}{Michael Grunwald}{Head of Architecture \& Cross-Technologies, CARIAD}
+\cardhead{CARD 5 OF 9 \textbar{} IMPULSE 3}{14:28 \textbar{} 4 MIN}{Michael Grunwald}{Head of Architecture \& Cross-Technologies, CARIAD}
 
+\cardcolumns{
 \lbl{Who}
 \begin{facts}
 \item Software and system architecture at CARIAD, the Volkswagen Group's software company
@@ -173,63 +278,127 @@ Six slides in four minutes: watch the timer.}
 \item His organisation includes CARIAD's R\&D AI Factory: AI agents in automotive software development
 \end{facts}
 
+\lbl{Listen for}
+\note{Who does he still need on his teams? Who becomes the next architect?}
+}{
 \lbl{Ask the room}
 \ask{Software in five years: is it built by large teams of engineers, or by a few top people steering a fleet of AI agents?}
     {Hands: large teams? \qquad A few, with agents?}
 
 \lbl{Hand over}
 \handover{Michael Grunwald's AI Factory at CARIAD is finding out right now.}
+}
+
+\cardfoot{Next: introduce Eike Wibrow, then discussion, 14:32}
+
+% ---------------------------------------------------
+% CARD 6: Eike Wibrow, discussion only (no separate impulse)
+% Sources, checked 23 November 2026: Wibrow (KION)/Eike Wibrow - Profil MMK.md
+% KION, "Strong Partnerships, Smarter Warehouses", 21 October 2026;
+% Wibrow's own CES 2025 post; KION's start-up article, 12 June 2025.
+% GXO deployment metric: KION press release, 21 October 2026.
+% This is commissioning time, not a workforce reduction.
+% ---------------------------------------------------
+\cardhead{CARD 6 OF 9 \textbar{} DISCUSSION GUEST}{14:32 \textbar{} SHORT INTRO}{Eike Wibrow}{VP Global Technology Strategy, KION Group}
+
+\cardcolumns{
+\lbl{Who}
+\begin{facts}
+\item Helped launch KION's partnership with NVIDIA and Accenture
+\item Focus: autonomous warehouses, digital twins and scaling automation
+\item Builds on technology partnerships and cooperation with start-ups
+\end{facts}
+
+\lbl{Concrete example}
+\note{GXO, \'Epinoy: autonomous vehicles work alongside warehouse staff.\\[1mm]
+KION reports over 60\,\% less on-site deployment time through simulation.}
 
 \lbl{Listen for}
-\note{Who does he still need on his teams? Who becomes the next architect?}
+\note{Which tasks disappear? Who handles exceptions? How do beginners learn?}
+}{
+\lbl{Introduce, about 20 seconds}
+\handover{Eike Wibrow leads global technology strategy at KION. He brings autonomous warehouses and physical AI into our discussion about people and skills.}
 
-\cardfoot{Next: discussion, pair 1, 14:32}
+\lbl{Bridge to pair 1}
+\note{From the shop floor to the warehouse: are we replacing skilled people, or preserving their experience?}
+
+\lbl{If time, during discussion}
+\q{Wibrow}{At GXO, what changed for the people: their headcount, their tasks, or their skills?}
+}
+
+\cardfoot{Next: pair 1 \textbar{} Introduction is part of the 14:32--14:38 discussion slot}
 
 % ---------------------------------------------------
-% CARD 4: Pair 1
+% CARD 7: Pair 1
 % ---------------------------------------------------
-\cardhead{CARD 4 OF 5 \textbar{} PAIR 1 \textbar{} SLIDE 1/2}{14:32 \textbar{} 6 MIN}{The boomers}{What is industrial AI for?}
+\cardhead{CARD 7 OF 9 \textbar{} PAIR 1 \textbar{} SLIDE 1/2}{14:32 \textbar{} 6 MIN}{The boomers}{What is industrial AI for?}
 
+\cardcolumns{
 \vspace{4mm}
 \thesis{primaryBlue}{A}{If industrial AI helps, it is because we can finally afford \textbf{fewer expensive skilled workers}.}
 \thesis{tertiaryOrange}{B}{If industrial AI helps, it is because it catches the \textbf{boomers' knowledge} before it retires.}
 
 \lbl{How}
-\note{Hands in the room: A or B? Then \textbf{Ahr\then Engel\then Grunwald}.\\
-A or B, one reason, one minute. No ``both are right''.}
+\note{Hands in the room: A or B? Then \textbf{Ahr\then Engel\then Grunwald\then Wibrow}.\\
+A or B, one reason, 45 seconds. No ``both are right''.}
 
+\lbl{If time}
+\note{To Ahr: the boomers are gone by 2037, your robots reach 50 percent after 2040. Who runs the lines in between?}
+}{
 \lbl{One question each}
 \q{Ahr}{One humanoid for 2.5 workers. But your robots learn from today's skilled workers. So: replace them, or learn from them before they retire?}
 \q{Engel}{The Cutting Assistant needs no cutting experience. Is that A or B: fewer experienced operators, or keeping what they know?}
 \q{Grunwald}{30 percent leaner, 1,000 AI experts in Berlin. Fewer expensive engineers, or knowledge brought back in-house?}
-
-\lbl{If time}
-\note{To Ahr: the boomers are gone by 2037, your robots reach 50 percent after 2040. Who runs the lines in between?}
+\q{Wibrow}{Autonomous trucks: fewer drivers, or preserving their know-how? Which experienced judgement is hardest to capture?}
+}
 
 \cardfoot{Next: pair 2, 14:38}
 
 % ---------------------------------------------------
-% CARD 5: Pair 2 and closing line
+% CARD 8: Pair 2
 % ---------------------------------------------------
-\cardhead{CARD 5 OF 5 \textbar{} PAIR 2 \textbar{} SLIDE 2/2}{14:38 \textbar{} 6 MIN}{Gen Z}{What does industrial AI do to them?}
+\cardhead{CARD 8 OF 9 \textbar{} PAIR 2 \textbar{} SLIDE 2/2}{14:38 \textbar{} 6 MIN}{Gen Z}{What does industrial AI do to them?}
 
+\cardcolumns{
 \vspace{4mm}
 \thesis{primaryBlue}{A}{For Gen Z, industrial AI is a \textbf{shortcut} to expertise. They start where the boomers ended.}
 \thesis{tertiaryOrange}{B}{For Gen Z, industrial AI is a \textbf{substitute} for expertise. They never have to learn what the machine already knows and will never become as much experts as boomers are.}
 
 \lbl{How}
-\note{Hands in the room: A or B? Then \textbf{Engel\then Grunwald\then Ahr}.}
-
+\note{Hands in the room: A or B? Then \textbf{Engel\then Grunwald\then Ahr\then Wibrow}.\\
+45 seconds each.}
+}{
 \lbl{One question each}
 \q{Engel}{A beginner cuts good parts on day one. Two years later: an expert, or a beginner with a very good assistant?}
 \q{Grunwald}{If AI writes the simple code, who becomes your next architect?}
 \q{Ahr}{Your roadmap reads like an apprenticeship: the robot takes the simple tasks first. Where does someone who starts in 2030 learn to handle a disruption?}
+\q{Wibrow}{When a truck handles routine moves, how does a beginner learn to deal with exceptions?}
+}
 
-\lbl{Close, 14:44}
-{\fontsize{14.5}{18.5}\selectfont\bfseries Both A options show up in this year's numbers.\\
-Both B options show up in ten years.\par}
-\vspace{1mm}
-\note{That is why companies end up with fewer people and no new experts without ever deciding to.}
+\cardfoot{Next: outlook and return to Heilbronn, 14:44}
+
+% ---------------------------------------------------
+% CARD 9: Outlook, based on Wuttke's notes of 23 November 2026
+% ---------------------------------------------------
+\cardhead{CARD 9 OF 9 \textbar{} OUTLOOK}{14:44 \textbar{} 1 MIN}{Skilled labour continues to matter}{Capture knowledge, develop it and pass it on}
+
+\cardcolumns{
+\lbl{The opportunity, if we get it right}
+\begin{cues}
+\item Capture the boomers' knowledge
+\item Augment it with physical AI
+\item Share it with the next generation of skilled workers
+\end{cues}
+
+\lbl{What changes}
+\handover{New job profiles. New skills to teach and learn.}
+}{
+\lbl{Return to Heilbronn}
+\handover{I am happy to contribute to educating that next generation here at TUM in Heilbronn.}
+
+\lbl{Thank the panel and audience}
+\note{Thank you, Helmut, Sarah, Michael and Eike. And thank you all for joining us.}
+}
 
 \cardfoot{End: 14:45}
 
